@@ -13,6 +13,7 @@ this file and include it in basic-server.js so that it actually works.
 **************************************************************/
 
 var messages = {results: []};
+var counter = 1;
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -63,12 +64,17 @@ var requestHandler = function(request, response) {
       if (typeof body === 'object') {
         body = Buffer.concat(body).toString();
       }
-      messages.results.push(JSON.parse(body));
-      console.log(JSON.parse(body));
-      response.end(body);
+
+      var msgToPost = JSON.parse(body);
+      msgToPost.createdAt = new Date();
+      msgToPost.objectId = counter;
+      counter++;
+      messages.results.push(msgToPost);
+
+      response.end(JSON.stringify(msgToPost));
     });
  
-  } else if (request.method = 'OPTIONS') {
+  } else if (request.method = 'OPTIONS' && request.url.startsWith('/classes/messages')) {
     var statusCode = 200;
     var headers = defaultCorsHeaders;
     response.end('OK');
