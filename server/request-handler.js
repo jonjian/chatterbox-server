@@ -39,13 +39,13 @@ var requestHandler = function(request, response) {
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
   // OUR CODE
-  if (request.method === 'GET' && request.url === '/classes/messages') {
+  if (request.method === 'GET' && request.url.startsWith('/classes/messages')) {
     var headers = defaultCorsHeaders;
     var statusCode = 200;
     headers['Content-Type'] = 'application/json';
     response.writeHead(statusCode, headers);
     response.end(JSON.stringify(messages));
-  } else if (request.method === 'POST' && request.url === '/classes/messages') {
+  } else if (request.method === 'POST' && request.url.startsWith('/classes/messages')) {
     var headers = defaultCorsHeaders;
     var statusCode = 201;
     headers['Content-Type'] = 'application/json';
@@ -68,6 +68,10 @@ var requestHandler = function(request, response) {
       response.end(body);
     });
  
+  } else if (request.method = 'OPTIONS') {
+    var statusCode = 200;
+    var headers = defaultCorsHeaders;
+    response.end('OK');
   } else {
     console.log('endpoint: ' + request.url); //endpoint is '/'
     // The outgoing status.
